@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Upload Images</title>
+  <style media="screen">
+    body {
+      font-family: Arial;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/min/dropzone.min.js" media="screen" title="no title" charset="utf-8">
+</head>
+
+<body>
+  <form>
+    <input id='img-input' type="file"></input>
+  </form>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-rc1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.11.1/axios.min.js"></script>
+  <script type="text/javascript">
+    var imgInput = document.getElementById('img-input');
+    imgInput.onchange = function(event) {
+      var reader = new FileReader();
+      var file = event.target.files[0];
+      reader.readAsDataURL(file);
+      reader.onload = function(loadEvent) {
+        var image = loadEvent.target.result.replace(/^data:image\/(png|jpeg);base64,/, '');
+        var payload = JSON.stringify({
+          image: image,
+          name: file.name
+        });
+        axios.post("https://yj0dx2u9p6.execute-api.us-east-1.amazonaws.com/dev/image", payload)
+          .then(function(res) { console.log(res); })
+          .catch(function(error) { console.error(error); });
+      }
+    }
+  </script>
+</body>
+
+</html>

@@ -21,7 +21,13 @@ module.exports.handler = function(event, context, cb) {
 
   s3.putObject(uploadParams, function(error,data) {
     if(error) context.fail(error)
-    else context.succeed({ status: 'image uploaded' })
+    else {
+      context.succeed({
+        status: 'image uploaded',
+        name: event.name,
+        url: 'https://s3.amazonaws.com/' + uploadParams.Bucket + '/' + uploadParams.Key
+      });
+    }
   });
 
 };
