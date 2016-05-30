@@ -10,6 +10,8 @@
     "url": "git://github.com/"
   },
   "dependencies": {
+    "asyncawait": "^1.0.3",
+    "gm": "^1.22.0",
     "serverless-cors-plugin": "^0.4.1"
   }
 }

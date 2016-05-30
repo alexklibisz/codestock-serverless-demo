@@ -14,27 +14,40 @@
 
 <body>
   <form>
-    <input id='img-input' type="file"></input>
+    <input id='img-input' type="file" multiple></input>
   </form>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-rc1/jquery.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.11.1/axios.min.js"></script>
   <script type="text/javascript">
+
+    function parseImage(file, callback) {
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var image = ev.target.result.replace(/^data:image\/(png|jpeg);base64,/, '');
+        callback(image, file);
+      }
+      reader.readAsDataURL(file);
+    }
+
+    function uploadImage(image, file) {
+      var payload = JSON.stringify({
+        image: image,
+        name: file.name
+      });
+      axios.post("https://yj0dx2u9p6.execute-api.us-east-1.amazonaws.com/dev/image", payload)
+        .then(function(res) { console.log('Success', res); })
+        .catch(function(error) { console.error('Error', error); });
+    }
+
     var imgInput = document.getElementById('img-input');
     imgInput.onchange = function(event) {
-      var reader = new FileReader();
-      var file = event.target.files[0];
-      reader.readAsDataURL(file);
-      reader.onload = function(loadEvent) {
-        var image = loadEvent.target.result.replace(/^data:image\/(png|jpeg);base64,/, '');
-        var payload = JSON.stringify({
-          image: image,
-          name: file.name
-        });
-        axios.post("https://yj0dx2u9p6.execute-api.us-east-1.amazonaws.com/dev/image", payload)
-          .then(function(res) { console.log(res); })
-          .catch(function(error) { console.error(error); });
+      var files = event.target.files;
+      for(var i = 0; i < event.target.files.length; i++) {
+        var file = event.target.files[i];
+        parseImage(file, uploadImage);
       }
     }
+
   </script>
 </body>
 

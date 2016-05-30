@@ -1,0 +1,15 @@
+{
+  "name": "image",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "asyncawait": "^1.0.3",
+    "gm": "^1.22.0"
+  }
+}
