@@ -1,18 +1,16 @@
 {
   "name": "sls-albums",
   "custom": {
-  "cors": {
+    "cors": {
       "allowOrigin": "*",
       "allowHeaders": ["Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key"]
+    },
+    "client": {
+      "bucketName": "demo-codestock-serverless-site"
     }
   },
   "plugins": [
     "serverless-cors-plugin",
     "serverless-client-s3"
-  ],
-  "custom" : {
-    "client": {
-      "bucketName": "demo-codestock-serverless-site"
-    }
-  }
+  ]
 }
