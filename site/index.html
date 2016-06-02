@@ -35,7 +35,7 @@
         name: file.name
       });
       axios.post("https://yj0dx2u9p6.execute-api.us-east-1.amazonaws.com/dev/image", payload)
-        .then(function(res) { console.log('Success', res); })
+        .then(function(res) { console.log('Success', res.data); })
         .catch(function(error) { console.error('Error', error); });
     }
 

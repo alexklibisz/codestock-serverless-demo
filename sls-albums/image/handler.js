@@ -3,73 +3,78 @@
 var fs = require('fs');
 var aws = require('aws-sdk');
 var gm = require('gm').subClass({imageMagick: true});
+var mime = require('mime');
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 
-module.exports.handler = async(function(event, context, cb) {
-
-  var s3 = new aws.S3({
+function saveImage(bucket, name, bodyBase64) {
+  const s3 = new aws.S3({
     apiVersion: '2006-03-01',
     accessKeyId: process.env.AWS_AKI,
     secretAccessKey: process.env.AWS_SAK,
     region: 'us-east-1'
   });
-
-  var uploadParams = {
-    Bucket: 'codestock-serverless-demo',
+  const params = {
+    Bucket: bucket,
     ACL: 'public-read',
-    Body: new Buffer(event.image, 'base64'),
-    Key: event.name,
-    ContentType: 'image/jpeg'
-  };
-
-  function saveImage(uploadParams) {
-    return new Promise(function(resolve, reject) {
-      s3.putObject(uploadParams, function(error, data) {
-        if (error) reject(error);
-        else resolve(data);
-      });
-    });
+    Body: new Buffer(bodyBase64, 'base64'),
+    Key: name,
+    ContentType: mime.lookup(name)
   }
-
-  function resizeImage(imageBase64) {
-    return new Promise((resolve, reject) => {
-      gm(imageBase64).resize(450).toBuffer(function (error, buffer) {
-        if (error) reject(error);
-        resolve(buffer);
-      });
+  return new Promise(function(resolve, reject) {
+    s3.putObject(params, function(error, data) {
+      if (error) reject(error);
+      else resolve(data);
     });
-  }
+  });
+}
+
+/**
+ * Take an image in base64 encoding.
+ * Resize it via imageMagick library.
+ * Return resized image as base64 encoded string.
+ */
+function resizeImage(imageBase64, size) {
+  size = size || 250;
+  return new Promise((resolve, reject) => {
+    gm(new Buffer(imageBase64, 'base64')).resize(size).toBuffer(function (error, buffer) {
+      if (error) reject(error);
+      resolve(buffer.toString('base64'));
+    });
+  });
+}
+
+module.exports.handler = async(function imageHandler(event, context, cb) {
+
+  const awsURL = 'http://s3.amazonaws.com';
+  const bucket = 'codestock-serverless-demo';
 
   try {
 
     // Save the standard image
-    await(saveImage(uploadParams));
+    const standardName = event.name;
+    const standardBody = event.image;
+    await(saveImage(bucket, standardName, standardBody));
 
-    // Create the resized image and save it.
-    const thumbBody = await(resizeImage(uploadParams.Body));
-    uploadParams.Body = thumbBody;
-    uploadParams.Key = event.name.replace('.', '-thumb.');
-    await(saveImage(uploadParams));
+    // Save the thumbnail
+    const extension = '.' + event.name.split('.').pop();
+    const thumbName = event.name.replace(extension, `-thumb${extension}`);
+    const thumbBody = await(resizeImage(event.image, 350));
+    await(saveImage(bucket, thumbName, thumbBody));
 
-    context.succeed({
+    // Return successful payload.
+    const successPayload = {
       status: 'image uploaded',
-      name: uploadParams.Key,
-      url: 'https://s3.amazonaws.com/' + uploadParams.Bucket + '/' + uploadParams.Key
-    })
+      standardName: standardName,
+      standardURL: `${awsURL}/${bucket}/${standardName}`,
+      thumbName: thumbName,
+      thumbURL: `${awsURL}/${bucket}/${thumbName}`
+    };
+
+    context.succeed(successPayload);
+
   } catch(error) {
     context.fail(error);
   }
-
-  // s3.putObject(uploadParams, function(error,data) {
-  //   if(error) context.fail(error)
-  //   else {
-  //     context.succeed({
-  //       status: 'image uploaded',
-  //       name: event.name,
-  //       url: 'https://s3.amazonaws.com/' + uploadParams.Bucket + '/' + uploadParams.Key
-  //     });
-  //   }
-  // });
 
 });
