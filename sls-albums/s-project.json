@@ -7,6 +7,12 @@
     }
   },
   "plugins": [
-    "serverless-cors-plugin"
-  ]
+    "serverless-cors-plugin",
+    "serverless-client-s3"
+  ],
+  "custom" : {
+    "client": {
+      "bucketName": "demo-codestock-serverless-site"
+    }
+  }
 }

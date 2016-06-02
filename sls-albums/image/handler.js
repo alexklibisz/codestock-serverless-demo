@@ -52,7 +52,7 @@ function resizeImage(imageBase64, size) {
 module.exports.handler = async(function imageHandler(event, context, cb) {
 
   const awsURL = 'http://s3.amazonaws.com';
-  const bucket = 'codestock-serverless-demo';
+  const bucket = 'demo-codestock-serverless-storage';
 
   try {
 
