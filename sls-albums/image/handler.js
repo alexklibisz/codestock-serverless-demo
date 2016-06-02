@@ -7,6 +7,11 @@ var mime = require('mime');
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 
+/**
+ * Take a bucket, image name, and the image body base64-encoded.
+ * Store that image in S3.
+ * Returns a promise.
+ */
 function saveImage(bucket, name, bodyBase64) {
   const s3 = new aws.S3({
     apiVersion: '2006-03-01',
@@ -32,7 +37,7 @@ function saveImage(bucket, name, bodyBase64) {
 /**
  * Take an image in base64 encoding.
  * Resize it via imageMagick library.
- * Return resized image as base64 encoded string.
+ * Return a promise resolving to resized image base64 encoded string.
  */
 function resizeImage(imageBase64, size) {
   size = size || 250;
