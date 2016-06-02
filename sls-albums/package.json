@@ -9,10 +9,15 @@
     "type": "git",
     "url": "git://github.com/"
   },
+  "scripts": {
+    "deploy-client": "cp -r client/src/* client/dist && sls client deploy"
+  },
   "dependencies": {
     "asyncawait": "^1.0.3",
     "gm": "^1.22.0",
     "serverless-client-s3": "^2.0.0",
     "serverless-cors-plugin": "^0.4.1"
+  },
+  "devDependencies": {
   }
 }
