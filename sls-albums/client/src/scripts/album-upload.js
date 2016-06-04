@@ -12,7 +12,7 @@
 
     for(var i = 0; i < event.target.files.length; i++) {
         var file = event.target.files[i];
-
+        console.log(file.name);
         // Read the image as base64.
         var reader = new FileReader();
         reader.readAsDataURL(file);
