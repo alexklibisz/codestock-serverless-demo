@@ -12,7 +12,7 @@
     axios.post('/album', payload)
       .then(function next(result) {
         var name = result.data.name;
-        window.location = '/album-upload.html?name=' + name;
+        window.location = '/album-upload.html?albumName=' + name;
       })
       .catch(function error(error) {
         allert(error.toString());
