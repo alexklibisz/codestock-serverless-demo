@@ -20,8 +20,8 @@
     });
   }
 
-  function appendThumbnail(url, name) {
-    thumbnails.append(`<div><img src=${url}></img><p>${name}</p></div>`);
+  function appendThumbnail(thumbURL, standardURL) {
+    thumbnails.append(`<div><img src=${thumbURL}></img><p><a href="${standardURL}">Full Size</a></p></div>`);
   }
 
   imgInput.change(function imageSelection(event) {
@@ -48,7 +48,7 @@
         })
         .then(function(res) {
           console.log(res.data.standardName);
-          appendThumbnail(res.data.thumbURL, res.data.thumbName);
+          appendThumbnail(res.data.thumbURL, res.data.standardURL);
         })
         .catch(function(error) {
           console.error('Error', error);
