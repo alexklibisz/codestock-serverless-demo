@@ -12,13 +12,13 @@ module.exports.handler = async(function imageHandler(event, context, cb) {
   try {
 
     // Save the standard image
-    const standardName = event.name;
+    const standardName = `${event.albumName}/${event.name}`;
     const standardBody = event.image;
     await(helpers.s3SaveImage(bucket, standardName, standardBody));
 
     // Save the thumbnail
     const extension = '.' + event.name.split('.').pop();
-    const thumbName = event.name.replace(extension, `-thumb${extension}`);
+    const thumbName = `${event.albumName}/` + event.name.replace(extension, `-thumb${extension}`);
     const thumbBody = await(helpers.resizeImage(event.image, 350));
     await(helpers.s3SaveImage(bucket, thumbName, thumbBody));
 

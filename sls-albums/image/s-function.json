@@ -22,6 +22,7 @@
       "requestParameters": {},
       "requestTemplates": {
         "application/json": {
+          "albumName": "$input.params('albumName')",
           "image": "$input.params('image')",
           "name": "$input.params('name')"
         }
