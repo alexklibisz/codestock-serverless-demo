@@ -2,12 +2,14 @@
 
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
+var ax = require('axios');
 var helpers = require('../lib');
 
 module.exports.handler = async(function imageHandler(event, context, cb) {
 
   const awsURL = 'http://s3.amazonaws.com';
   const bucket = 'demo-codestock-serverless-storage';
+  const lambdaURL = 'https://yj0dx2u9p6.execute-api.us-east-1.amazonaws.com/dev';
 
   try {
 
@@ -30,6 +32,10 @@ module.exports.handler = async(function imageHandler(event, context, cb) {
       thumbName: thumbName,
       thumbURL: `${awsURL}/${bucket}/${thumbName}`
     };
+
+    // Trigger the album rebuild
+    const rebuildURL = `${lambdaURL}/album-builder`;
+    ax.get(rebuildURL, JSON.stringify({ albumName: event.albumName }));
 
     context.succeed(successPayload);
 

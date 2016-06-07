@@ -22,9 +22,24 @@ module.exports.s3SaveImage = function s3SaveImage(bucket, name, bodyBase64) {
     Body: new Buffer(bodyBase64, 'base64'),
     Key: name,
     ContentType: mime.lookup(name)
-  }
+  };
   return new Promise(function(resolve, reject) {
     s3.putObject(params, function(error, data) {
+      if (error) reject(error);
+      else resolve(data);
+    });
+  });
+};
+
+module.exports.s3SaveFile = module.exports.s3SaveImage;
+
+module.exports.s3ListObjects = function s3ListObjects(bucket, keyPrefix) {
+  const params = {
+    Bucket: bucket,
+    Prefix: keyPrefix
+  };
+  return new Promise(function(resolve, reject) {
+    s3.listObjects(params, function(error, data) {
       if (error) reject(error);
       else resolve(data);
     });
