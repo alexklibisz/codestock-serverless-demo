@@ -72,7 +72,7 @@ module.exports.s3CreateDirectory = function s3CreateDirectory(bucket, name, over
 module.exports.resizeImage = function resizeImage(imageBase64, size) {
   size = size || 250;
   return new Promise((resolve, reject) => {
-    gm(new Buffer(imageBase64, 'base64')).resize(size).toBuffer(function (error, buffer) {
+    gm(new Buffer(imageBase64, 'base64')).resize(size).quality(80).toBuffer(function (error, buffer) {
       if (error) reject(error);
       resolve(buffer.toString('base64'));
     });
