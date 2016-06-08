@@ -4,6 +4,8 @@
 
   var albumName = getQueryVariable('albumName') || 'Demo_Album';
   $('#album-name').text(albumName);
+  debugger;
+  $('#album-link').attr('href', '/albums/' + albumName);
 
   var form = $('#form-album-upload');
   var imgInput = form.find('[name=img-input]');

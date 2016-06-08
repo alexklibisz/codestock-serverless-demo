@@ -8,6 +8,7 @@ const fs = require('fs');
 
 module.exports.handler = async(function(event, context, cb) {
 
+  const awsURL = 'http://s3.amazonaws.com'
   const storageBucket = 'demo-codestock-serverless-storage';
   const siteBucket = 'demo-codestock-serverless-site';
 
@@ -23,8 +24,8 @@ module.exports.handler = async(function(event, context, cb) {
   const thumbs = images.filter(x => x.Key.indexOf('thumb') > -1);
 
   // Generate an html string using the filenames.
-  let htmlString = '<html>';
-  thumbs.forEach(t => htmlString += `<p>${t.Key}</p>`);
+  let htmlString = `<html><head><title>${event.albumName}</title></head>`;
+  thumbs.forEach(t => htmlString += `<div><img src="${awsURL}/${storageBucket}/${t.Key}"></img></div>`);
   htmlString += '</html>';
 
   // Write the html to a file.

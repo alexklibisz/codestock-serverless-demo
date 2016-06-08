@@ -13,8 +13,9 @@ module.exports.handler = async(function imageHandler(event, context, cb) {
 
   try {
 
-    // Replace spaces with underscores in albumName
+    // Replace spaces with underscores in albumName and name.
     event.albumName = event.albumName.replace(/\ /g, '_');
+    event.name = event.name.replace(/\ /g, '_');
 
     // Save the standard image
     const standardName = `${event.albumName}/${event.name}`;
