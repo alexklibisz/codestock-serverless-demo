@@ -24,19 +24,17 @@ module.exports.handler = async(function(event, context, cb) {
   const thumbs = images.filter(x => x.Key.indexOf('thumb') > -1);
 
   // Generate an html string using the filenames.
-  let htmlString = `<html><head><title>${event.albumName}</title></head>`;
+  let htmlString = `<html><head><title>${event.albumName}</title></head><body>`;
+  htmlString += `<h1>${event.albumName}</h1><p>${standard.length} images</p>`;
   thumbs.forEach(t => htmlString += `<div><img src="${awsURL}/${storageBucket}/${t.Key}"></img></div>`);
-  htmlString += '</html>';
+  htmlString += '</body></html>';
 
-  // Write the html to a file.
-  fs.writeFileSync(`/tmp/${event.albumName}`, htmlString, 'utf8');
-  const fileContents = fs.readFileSync(`/tmp/${event.albumName}`).toString('base64');
+  // Write the html file to a buffer
+  const fileContents = new Buffer(htmlString).toString('base64');
 
   // Write the file to S3, using albumName as the directory.
-  helpers.s3SaveFile(siteBucket, `albums/${event.albumName}/index.html`, fileContents);
+  await(helpers.s3SaveFile(siteBucket, `albums/${event.albumName}/index.html`, fileContents));
 
-  context.succeed({
-    message: images.length
-  });
+  context.succeed({ imageCount: standard.length });
 
 });

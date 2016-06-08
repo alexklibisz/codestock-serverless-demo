@@ -4,6 +4,7 @@ var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 var ax = require('axios');
 var helpers = require('../lib');
+var Promise = require('bluebird');
 
 module.exports.handler = async(function imageHandler(event, context, cb) {
 
@@ -17,16 +18,27 @@ module.exports.handler = async(function imageHandler(event, context, cb) {
     event.albumName = event.albumName.replace(/\ /g, '_');
     event.name = event.name.replace(/\ /g, '_');
 
-    // Save the standard image
+    // Setup the standard image
     const standardName = `${event.albumName}/${event.name}`;
     const standardBody = event.image;
-    await(helpers.s3SaveImage(bucket, standardName, standardBody));
 
-    // Save the thumbnail
+    // Setup the thumbnail
     const extension = '.' + event.name.split('.').pop();
     const thumbName = `${event.albumName}/` + event.name.replace(extension, `-thumb${extension}`);
     const thumbBody = await(helpers.resizeImage(event.image, 350));
-    await(helpers.s3SaveImage(bucket, thumbName, thumbBody));
+
+    // Trigger the album rebuild
+    const rebuildURL = `${lambdaURL}/album-builder`;
+
+    // Upload standard and thumbnail
+    await(Promise.all([
+      helpers.s3SaveImage(bucket, standardName, standardBody),
+      helpers.s3SaveImage(bucket, thumbName, thumbBody)
+    ]));
+
+    // Hit the rebuild endpoing to rebuild this album.
+    const rebuildResult = await(ax.get(rebuildURL, { params: { albumName: event.albumName } }));
+    const imageCount = rebuildResult.data.imageCount;
 
     // Return successful payload.
     const successPayload = {
@@ -34,12 +46,9 @@ module.exports.handler = async(function imageHandler(event, context, cb) {
       standardName: standardName,
       standardURL: `${awsURL}/${bucket}/${standardName}`,
       thumbName: thumbName,
-      thumbURL: `${awsURL}/${bucket}/${thumbName}`
+      thumbURL: `${awsURL}/${bucket}/${thumbName}`,
+      imageCount: imageCount
     };
-
-    // Trigger the album rebuild
-    const rebuildURL = `${lambdaURL}/album-builder`;
-    await(ax.get(rebuildURL, { params: { albumName: event.albumName } }));
 
     context.succeed(successPayload);
 
