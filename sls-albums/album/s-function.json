@@ -19,8 +19,10 @@
     "authorizerFunction": false,
     "apiKeyRequired": false,
     "requestParameters": {},
-    "application/json": {
-      "name": "$input.params('name')"
+    "requestTemplates": {
+      "application/json": {
+        "albumName": "$input.params('albumName')"
+      }
     },
     "responses": {
       "400": {

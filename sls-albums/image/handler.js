@@ -13,6 +13,9 @@ module.exports.handler = async(function imageHandler(event, context, cb) {
 
   try {
 
+    // Replace spaces with underscores in albumName
+    event.albumName = event.albumName.replace(/\ /g, '_');
+
     // Save the standard image
     const standardName = `${event.albumName}/${event.name}`;
     const standardBody = event.image;
@@ -35,7 +38,7 @@ module.exports.handler = async(function imageHandler(event, context, cb) {
 
     // Trigger the album rebuild
     const rebuildURL = `${lambdaURL}/album-builder`;
-    ax.get(rebuildURL, JSON.stringify({ albumName: event.albumName }));
+    await(ax.get(rebuildURL, { params: { albumName: event.albumName } }));
 
     context.succeed(successPayload);
 

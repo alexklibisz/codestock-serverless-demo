@@ -11,6 +11,7 @@ var start = new Date().getTime();
 
 for(var i = 0; i < 10; i++) {
   var payload = {
+    albumName: 'Portland Album',
     image: fileContent,
     name: 'portland-' + i + '.jpg'
   };
