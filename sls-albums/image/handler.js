@@ -27,18 +27,11 @@ module.exports.handler = async(function imageHandler(event, context, cb) {
     const thumbName = `${event.albumName}/` + event.name.replace(extension, `-thumb${extension}`);
     const thumbBody = await(helpers.resizeImage(event.image, 350));
 
-    // Trigger the album rebuild
-    const rebuildURL = `${lambdaURL}/album-builder`;
-
     // Upload standard and thumbnail
     await(Promise.all([
       helpers.s3SaveImage(bucket, standardName, standardBody),
       helpers.s3SaveImage(bucket, thumbName, thumbBody)
     ]));
-
-    // Hit the rebuild endpoing to rebuild this album.
-    const rebuildResult = await(ax.get(rebuildURL, { params: { albumName: event.albumName } }));
-    const imageCount = rebuildResult.data.imageCount;
 
     // Return successful payload.
     const successPayload = {
@@ -46,8 +39,7 @@ module.exports.handler = async(function imageHandler(event, context, cb) {
       standardName: standardName,
       standardURL: `${awsURL}/${bucket}/${standardName}`,
       thumbName: thumbName,
-      thumbURL: `${awsURL}/${bucket}/${thumbName}`,
-      imageCount: imageCount
+      thumbURL: `${awsURL}/${bucket}/${thumbName}`
     };
 
     context.succeed(successPayload);

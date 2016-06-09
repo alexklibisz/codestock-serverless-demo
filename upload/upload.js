@@ -9,11 +9,11 @@ console.log(fileContent.substr(0,100));
 
 var start = new Date().getTime();
 
-for(var i = 0; i < 10; i++) {
+for(var i = 0; i < 1; i++) {
   var payload = {
     albumName: 'Portland Album',
     image: fileContent,
-    name: 'portland-' + i + '.jpg'
+    name: 'portland-' + String(Math.random()).slice(2,5) + '.jpg'
   };
   console.log(payload.name);
   ax.post(url, JSON.stringify(payload))

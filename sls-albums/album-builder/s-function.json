@@ -11,36 +11,17 @@
   "custom": {
     "excludePatterns": []
   },
-  "endpoints": [{
-    "path": "album-builder",
-    "method": "GET",
-    "type": "AWS",
-    "authorizationType": "none",
-    "authorizerFunction": false,
-    "apiKeyRequired": false,
-    "requestParameters": {},
-    "requestTemplates": {
-      "application/json": {
-        "albumName": "$input.params('albumName')"
-      }
-    },
-    "responses": {
-      "400": {
-        "statusCode": "400"
-      },
-      "default": {
-        "statusCode": "200",
-        "responseParameters": {},
-        "responseModels": {
-          "application/json;charset=UTF-8": "Empty"
-        },
-        "responseTemplates": {
-          "application/json;charset=UTF-8": ""
-        }
+  "endpoints": [],
+  "events": [
+    {
+      "name": "storage-object-created",
+      "type": "s3",
+      "config": {
+        "bucket": "demo-codestock-serverless-storage",
+        "bucketEvents": ["s3:ObjectCreated:*"]
       }
     }
-  }],
-  "events": [],
+  ],
   "environment": {
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
