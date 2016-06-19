@@ -5,7 +5,7 @@ var helpers = require('../lib');
 
 module.exports.handler = async(function(event, context, cb) {
 
-  const bucket = 'demo-codestock-serverless-storage';
+  const bucket = 'lambda-albums.xyz-storage';
 
   try {
     event.name = event.name.replace(/\ /g, '_');

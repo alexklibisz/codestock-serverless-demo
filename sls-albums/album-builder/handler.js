@@ -5,12 +5,13 @@ const await = require('asyncawait/await');
 const helpers = require('../lib');
 const mime = require('mime');
 const fs = require('fs');
+const hbs = require('handlebars');
 
 module.exports.handler = async(function(event, context, cb) {
 
   const awsURL = 'http://s3.amazonaws.com'
-  const storageBucket = 'demo-codestock-serverless-storage';
-  const siteBucket = 'demo-codestock-serverless-site';
+  const storageBucket = 'lambda-albums.xyz-storage';
+  const siteBucket = 'lambda-albums.xyz';
 
   const s3Object = (event.Records.pop()).s3.object;
   const albumName = s3Object.key.split('/').shift();
@@ -26,12 +27,15 @@ module.exports.handler = async(function(event, context, cb) {
   const standard = images.filter(x => x.Key.indexOf('thumb') < 0);
   const thumbs = images.filter(x => x.Key.indexOf('thumb') > -1);
 
-  // Generate an html string using the filenames.
-  let htmlString = `<html><head><title>${albumName}</title></head><body>`;
-  htmlString += `<h1>${albumName}</h1><p>${standard.length} images</p>`;
-  thumbs.forEach(t => htmlString += `<div><img src="${awsURL}/${storageBucket}/${t.Key}"></img></div>`);
-  htmlString += `<p>Rebuilt: ${new Date().toLocaleString()}`;
-  htmlString += '</body></html>';
+  // Add src URLs to thumbs and standard
+  thumbs.forEach(x => x.src = `${awsURL}/${storageBucket}/${x.Key}`);
+  standard.forEach(x => x.src = `${awsURL}/${storageBucket}/${x.Key}`);
+
+  const template = fs.readFileSync('./album-builder/album-view.hbs', 'utf8');
+  const compiled = hbs.compile(template);
+  const updatedAt = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
+  const content = { albumName, standard, thumbs, updatedAt };
+  const htmlString = compiled(content);
 
   // Write the html file to a buffer
   const fileContents = new Buffer(htmlString).toString('base64');

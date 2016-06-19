@@ -6,7 +6,7 @@
       "allowHeaders": ["Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key"]
     },
     "client": {
-      "bucketName": "demo-codestock-serverless-site"
+      "bucketName": "lambda-albums.xyz"
     }
   },
   "plugins": [

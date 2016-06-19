@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lambda Albums: {{albumName}}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/cosmo/bootstrap.min.css" media="screen" title="no title" charset="utf-8">
+</head>
+<body style="padding: 10px">
+  <div class="container">
+    <div class="well">
+      <h1>Lambda Albums: {{albumName}}</h1>
+      <p>{{standard.length}} image(s) in this album. Last updated {{updatedAt}}.</p>
+    </div>
+    <div class="row">
+    {{#each thumbs}}
+      <div class="col-sm-12 col-md-4" style="padding: 10px">
+        <img src="{{src}}"/>
+      </div>
+    {{/each}}
+    </div>
+  </div>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</body>
+</html>

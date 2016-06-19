@@ -11,10 +11,12 @@
     var payload = JSON.stringify({ name: name });
     axios.post('/album', payload)
       .then(function next(result) {
+        debugger;
         var name = result.data.name;
         window.location = '/album-upload.html?albumName=' + name;
       })
       .catch(function error(error) {
+        debugger;
         allert(error.toString());
       });
     return false;
