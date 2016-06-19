@@ -6,6 +6,7 @@ const helpers = require('../lib');
 const mime = require('mime');
 const fs = require('fs');
 const hbs = require('handlebars');
+const _ = require('lodash');
 
 module.exports.handler = async(function(event, context, cb) {
 
@@ -27,14 +28,18 @@ module.exports.handler = async(function(event, context, cb) {
   const standard = images.filter(x => x.Key.indexOf('thumb') < 0);
   const thumbs = images.filter(x => x.Key.indexOf('thumb') > -1);
 
-  // Add src URLs to thumbs and standard
-  thumbs.forEach(x => x.src = `${awsURL}/${storageBucket}/${x.Key}`);
-  standard.forEach(x => x.src = `${awsURL}/${storageBucket}/${x.Key}`);
+  // Combine into a single photos array and add src URLs
+  const photos = _.zip(thumbs, standard).map((pair, i) => {
+    const thumb = pair[0], standard = pair[1];
+    thumb.src = `${awsURL}/${storageBucket}/${thumb.Key}`;
+    standard.src = `${awsURL}/${storageBucket}/${standard.Key}`
+    return { thumb, standard };
+  });
 
   const template = fs.readFileSync('./album-builder/album-view.hbs', 'utf8');
   const compiled = hbs.compile(template);
   const updatedAt = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
-  const content = { albumName, standard, thumbs, updatedAt };
+  const content = { albumName, photos, updatedAt };
   const htmlString = compiled(content);
 
   // Write the html file to a buffer
