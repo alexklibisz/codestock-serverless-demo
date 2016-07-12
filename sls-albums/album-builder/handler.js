@@ -11,8 +11,8 @@ const _ = require('lodash');
 module.exports.handler = async(function(event, context, cb) {
 
   const awsURL = 'http://s3.amazonaws.com'
-  const storageBucket = 'lambda-albums.xyz-storage';
-  const siteBucket = 'lambda-albums.xyz';
+  const storageBucket = 'www.lambda-albums.xyz-storage';
+  const siteBucket = 'www.lambda-albums.xyz';
 
   const s3Object = (event.Records.pop()).s3.object;
   const albumName = s3Object.key.split('/').shift();

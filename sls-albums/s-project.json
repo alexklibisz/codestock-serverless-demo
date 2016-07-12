@@ -6,7 +6,7 @@
       "allowHeaders": ["Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key"]
     },
     "client": {
-      "bucketName": "lambda-albums.xyz"
+      "bucketName": "www.lambda-albums.xyz"
     }
   },
   "plugins": [

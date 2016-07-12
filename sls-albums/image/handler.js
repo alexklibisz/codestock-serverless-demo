@@ -9,7 +9,7 @@ var Promise = require('bluebird');
 module.exports.handler = async(function imageHandler(event, context, cb) {
 
   const awsURL = 'http://s3.amazonaws.com';
-  const bucket = 'lambda-albums.xyz-storage';
+  const bucket = 'www.lambda-albums.xyz-storage';
   const lambdaURL = 'https://yj0dx2u9p6.execute-api.us-east-1.amazonaws.com/dev';
 
   try {

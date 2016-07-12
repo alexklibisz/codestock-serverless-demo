@@ -20,11 +20,11 @@
         "s3SchemaVersion": "1.0",
         "configurationId": "MzIwZTM4M2EtNDhjZS00OTFjLTg2N2ItYmYxZTUzZjdjNjc5",
         "bucket": {
-          "name": "lambda-albums.xyz-storage",
+          "name": "www.lambda-albums.xyz-storage",
           "ownerIdentity": {
             "principalId": "A1LBPNE98IPD1E"
           },
-          "arn": "arn:aws:s3:::lambda-albums.xyz-storage"
+          "arn": "arn:aws:s3:::www.lambda-albums.xyz-storage"
         },
         "object": {
           "key": "Portland_Album/portland-028-thumb.jpg",
