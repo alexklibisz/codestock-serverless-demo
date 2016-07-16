@@ -36,6 +36,7 @@ module.exports.handler = async(function(event, context, cb) {
     return { thumb, standard };
   });
 
+  // Set up and compile the handlebars View
   const template = fs.readFileSync('./album-builder/album-view.hbs', 'utf8');
   const compiled = hbs.compile(template);
   const updatedAt = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
@@ -48,6 +49,6 @@ module.exports.handler = async(function(event, context, cb) {
   // Write the file to S3, using albumName as the directory.
   await(helpers.s3SaveFile(siteBucket, `albums/${albumName}/index.html`, fileContents));
 
-  context.succeed({ imageCount: standard.length });
+  context.succeed();
 
 });
